@@ -1,0 +1,37 @@
+name: stroydomtest
+services:
+  backend:
+    build:
+      context: C:\Users\YCHIK\PycharmProjects\StroyDomTEST
+      dockerfile: app/DockerFile
+    container_name: fastapi_backend
+    networks:
+      - app-network
+    ports:
+      - "8000:8000"
+  db:
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+    image: postgres:13
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
+  frontend:
+    build:
+      context: C:\Users\YCHIK\PycharmProjects\StroyDomTEST\nuxt-primevue-project
+      dockerfile: DockerFile
+    container_name: nuxt_frontend
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+networks:
+  app-network:
+    driver: bridge
